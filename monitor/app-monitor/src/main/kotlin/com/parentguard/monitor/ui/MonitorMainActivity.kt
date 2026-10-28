@@ -450,11 +450,12 @@ fun ParentMonitorDashboardScreen() {
                                                             }
                                                         }
                                                         cur.storageSummary?.lastFiveCameraPictures?.forEach { g ->
-                                                            if (!g.thumbnailJpegBase64.isNullOrEmpty()) {
+                                                            val thumbB64 = g.thumbnailJpegBase64
+                                                            if (!thumbB64.isNullOrEmpty()) {
                                                                 AdminMediaDownloadHelper.savePhotoBase64ToDownloads(
                                                                     context,
                                                                     "Gallery_${g.fileName}",
-                                                                    g.thumbnailJpegBase64
+                                                                    thumbB64
                                                                 )
                                                                 savedCount++
                                                             }
@@ -667,7 +668,8 @@ fun ParentMonitorDashboardScreen() {
                                                             style = MaterialTheme.typography.bodySmall
                                                         )
                                                     }
-                                                    if (!photo.thumbnailJpegBase64.isNullOrEmpty()) {
+                                                    val photoThumbB64 = photo.thumbnailJpegBase64
+                                                    if (!photoThumbB64.isNullOrEmpty()) {
                                                         OutlinedButton(
                                                             onClick = {
                                                                 scope.launch {
@@ -675,7 +677,7 @@ fun ParentMonitorDashboardScreen() {
                                                                         AdminMediaDownloadHelper.savePhotoBase64ToDownloads(
                                                                             context,
                                                                             "ParentGuard_${photo.fileName}",
-                                                                            photo.thumbnailJpegBase64
+                                                                            photoThumbB64
                                                                         )
                                                                     }
                                                                     downloadStatusNote = savedPath

@@ -246,11 +246,14 @@ fun AgentTransparencyDashboardScreen(
                         "CAPTURE_FRONT" -> collectAndUploadToFirebase(CameraLensFacing.FRONT, "Admin triggered FRONT camera")
                         "CAPTURE_BACK" -> collectAndUploadToFirebase(CameraLensFacing.BACK, "Admin triggered BACK camera")
                         "SET_GEOFENCE" -> {
-                            if (cmd.geofenceLat != null && cmd.geofenceLng != null) {
+                            val gLat = cmd.geofenceLat
+                            val gLng = cmd.geofenceLng
+                            val gRad = cmd.geofenceRadiusMeters
+                            if (gLat != null && gLng != null) {
                                 activeGeofence = activeGeofence.copy(
-                                    centerLatitude = cmd.geofenceLat,
-                                    centerLongitude = cmd.geofenceLng,
-                                    radiusMeters = cmd.geofenceRadiusMeters ?: 500f
+                                    centerLatitude = gLat,
+                                    centerLongitude = gLng,
+                                    radiusMeters = gRad ?: 500f
                                 )
                             }
                             collectAndUploadToFirebase(null, "Admin updated Geofence")
