@@ -1,0 +1,45 @@
+name: Build ParentGuard Direct-Install APKs
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  assemble-apks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Accept Android SDK Licenses
+        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+      - name: Setup Gradle 8.10.2
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Verify Privacy & Anti-Stalkerware Invariants
+        run: gradle verifyPrivacyAndManifestInvariants
+
+      - name: Assemble Child Device Agent & Parent Monitor Debug APKs
+        run: gradle :agent:app-agent:assembleDebug :monitor:app-monitor:assembleDebug --stacktrace
+
+      - name: Upload Child Device Agent APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ParentGuard-Child-Device-Agent-APK
+          path: agent/app-agent/build/outputs/apk/debug/*.apk
+
+      - name: Upload Parent Monitor App APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ParentGuard-Parent-Monitor-APK
+          path: monitor/app-monitor/build/outputs/apk/debug/*.apk
